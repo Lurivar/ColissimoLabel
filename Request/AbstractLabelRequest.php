@@ -65,14 +65,27 @@ abstract class AbstractLabelRequest extends AbstractRequest
             ],
             'letter' => [
                 'service' => [
-                    "productCode" => $this->getLetter()->getService()->getProductCode(),
-                    "depositDate" => $this->getLetter()->getService()->getDepositDate()->format('Y-m-d'),
-                    "orderNumber" => $this->getLetter()->getService()->getOrderNumber(),
-                    'commercialName' => $this->getLetter()->getService()->getCommercialName()
+                    'productCode' => $this->getLetter()->getService()->getProductCode(),
+                    'depositDate' => $this->getLetter()->getService()->getDepositDate()->format('Y-m-d'),
+                    'transportationAmount' => $this->getLetter()->getService()->getTransportationAmount(),
+                    'totalAmount' => $this->getLetter()->getService()->getTransportationAmount(),
+                    'orderNumber' => $this->getLetter()->getService()->getOrderNumber(),
+                    'commercialName' => $this->getLetter()->getService()->getCommercialName(),
+                    'returnTypeChoice' => $this->getLetter()->getService()->getReturnTypeChoice(),
                 ],
                 'parcel' => [
                     'weight' => $this->getLetter()->getParcel()->getWeight(),
                     'pickupLocationId' => $this->getLetter()->getParcel()->getPickupLocationId()
+                ],
+                'customsDeclarations' => [
+                    'includeCustomsDeclarations' => $this->getLetter()->getCustomsDeclarations()->getIncludeCustomsDeclarations(),
+                    'contents' => [
+                        'article' => 'falseArticle',
+                        'category' => [
+                            'value' => $this->getLetter()->getCustomsDeclarations()->getCategory(),
+                        ]
+                    ]
+
                 ],
                 'sender' => [
                     'senderParcelRef' => $this->getLetter()->getSender()->getSenderParcelRef(),
@@ -111,7 +124,7 @@ abstract class AbstractLabelRequest extends AbstractRequest
                         'email'=> $this->getLetter()->getAddressee()->getAddress()->getEmail(),
                         'language' => $this->getLetter()->getAddressee()->getAddress()->getLanguage()
                     ]
-                ]
+                ],
             ]
         ]);
     }

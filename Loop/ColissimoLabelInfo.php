@@ -73,22 +73,23 @@ class ColissimoLabelInfo extends BaseLoop implements PropelSearchLoopInterface
             if (null !== $order = OrderQuery::create()->findPk($this->getOrderId())) {
                 $loopResultRow = new LoopResultRow();
 
+                $defaultSigned = ColissimoLabel::getConfigValue(ColissimoLabel::CONFIG_KEY_DEFAULT_SIGNED);
+
                 $loopResultRow
-                    ->set("ORDER_ID", $this->getOrderId())
-                    ->set("HAS_ERROR", false)
-                    ->set("ERROR_MESSAGE", null)
-                    ->set("WEIGHT", $order->getWeight())
-                    ->set("SIGNED", true)
-                    ->set("TRACKING_NUMBER", null)
-                    ->set("HAS_LABEL", false)
-                    ->set("LABEL_URL", URL::getInstance()->absoluteUrl("/admin/module/colissimows/label/" . $this->getOrderId()))
-                    ->set("CLEAR_LABEL_URL", URL::getInstance()->absoluteUrl("/admin/module/colissimows/label/clear/" . $this->getOrderId()))
-                    ->set("CAN_BE_NOT_SIGNED", ColissimoLabel::canOrderBeNotSigned($order));
-                    //->set("CAN_BE_NOT_SIGNED", ColissimoWs::canOrderBeNotSigned($order)); //TODO
+                    ->set('ORDER_ID', $this->getOrderId())
+                    ->set('HAS_ERROR', false)
+                    ->set('ERROR_MESSAGE', null)
+                    ->set('WEIGHT', $order->getWeight())
+                    ->set('SIGNED', $defaultSigned)
+                    ->set('TRACKING_NUMBER', null)
+                    ->set('HAS_LABEL', false)
+                    ->set('LABEL_URL', null)
+                    ->set('CLEAR_LABEL_URL', null)
+                    ->set('CAN_BE_NOT_SIGNED', ColissimoLabel::canOrderBeNotSigned($order));
 
                 $loopResult->addRow($loopResultRow);
             }
-        } else { //TODO Check if everything is ok
+        } else {
             /** @var ColissimowsLabel|ColissimoLabelModel $result */
             foreach ($loopResult->getResultDataCollection() as $result) {
 
@@ -112,10 +113,12 @@ class ColissimoLabelInfo extends BaseLoop implements PropelSearchLoopInterface
                     ->set('HAS_LABEL', !empty($result->getLabelType()))
                     ->set('LABEL_TYPE', $result->getLabelType())
                     ->set('HAS_CUSTOMS_INVOICE', $result->getWithCustomsInvoice())
-                    ->set('LABEL_URL', URL::getInstance()->absoluteUrl('/admin/module/colissimows/label/' . $result->getOrderId()))
-                    ->set('CUSTOMS_INVOICE_URL', URL::getInstance()->absoluteUrl('/admin/module/colissimows/customs-invoice/' . $result->getOrderId()))
+                    ->set('LABEL_URL', URL::getInstance()->absoluteUrl('/admin/module/colissimolabel/label/' . $result->getTrackingNumber() . '?download=1'))
+                    ->set('CUSTOMS_INVOICE_URL', URL::getInstance()->absoluteUrl('/admin/module/colissimolabel/customs-invoice/' . $result->getOrderId()))
                     ->set('CLEAR_LABEL_URL', URL::getInstance()->absoluteUrl('/admin/module/colissimolabel/label/delete/' . $result->getTrackingNumber() . '?order=' . $result->getOrderId()))
-                    ->set('CAN_BE_NOT_SIGNED', ColissimoLabel::canOrderBeNotSigned($result->getOrder()));
+                    ->set('CAN_BE_NOT_SIGNED', ColissimoLabel::canOrderBeNotSigned($result->getOrder()))
+                    ->set('ORDER_DATE', $result->getOrder()->getCreatedAt())
+                ;
 
                 $loopResult->addRow($loopResultRow);
             }

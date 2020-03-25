@@ -11,9 +11,8 @@
     </loops>
 
     <forms>
-        <!--
-        <form name="MyFormName" class="ColissimoLabel\Form\MySuperForm" />
-        -->
+        <form name="colissimolabel.configure" class="ColissimoLabel\Form\ConfigureColissimoLabel" />
+        <form name="colissimolabel_export_form" class="ColissimoLabel\Form\LabelGenerationForm" />
     </forms>
 
     <commands>
@@ -24,7 +23,6 @@
 
     <!--
     <services>
-
     </services>
     -->
 

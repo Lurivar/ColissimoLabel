@@ -60,11 +60,11 @@ class BordereauController extends AdminController
 
         /** @var ColissimoLabelModel $label */
         foreach ($labels as $label) {
-            $parcelNumbers[] = $label->getNumber();
+            $parcelNumbers[] = $label->getTrackingNumber();
         }
 
-        /** Compatibility with ColissimoWS /!\ DO NOT use strict comparison */
-        if (ModuleQuery::create()->findOneByCode('ColissimoWs')->getActivate()) {
+        /** Compatibility with ColissimoWS < 2.0.0 */
+        if (ModuleQuery::create()->findOneByCode('ColissimoWs')) {
             $labelsWs = ColissimowsLabelQuery::create()
                 ->filterByCreatedAt($lastBordereauDate, Criteria::GREATER_THAN)
                 ->find();
@@ -73,7 +73,6 @@ class BordereauController extends AdminController
             foreach ($labelsWs as $labelWs) {
                 $parcelNumbers[] = $labelWs->getTrackingNumber();
             }
-
         }
 
         $service = new SOAPService();
@@ -84,17 +83,19 @@ class BordereauController extends AdminController
         $parseResponse = $service->callGenerateBordereauByParcelsNumbersAPI($APIConfiguration, $parcelNumbers);
         $resultAttachment = $parseResponse->attachments;
         if (!isset($resultAttachment[0])) {
-            return $this->listBordereauAction("No label found");
-            throw new \Exception("No label found");
+            if (!isset($parseResponse->soapResponse['data'])) {
+                return $this->listBordereauAction('No label found');
+            }
+            return $this->listBordereauAction('Error : ' . $this->getError($parseResponse->soapResponse['data']));
         }
         $bordereauContent = $resultAttachment[0];
-        $fileContent = $bordereauContent["data"];
+        $fileContent = $bordereauContent['data'];
 
-        if ("" == $fileContent) {
-            throw new \Exception("File is empty");
+        if ('' == $fileContent) {
+            throw new \Exception('File is empty');
         }
 
-        $filePath = ColissimoLabel::getBordereauPath("bordereau_".(new \DateTime())->format("Y-m-d_H-i-s"));
+        $filePath = ColissimoLabel::getBordereauPath('bordereau_' .(new \DateTime())->format('Y-m-d_H-i-s'));
 
         $fileSystem = new Filesystem();
         $fileSystem->dumpFile(
@@ -102,14 +103,33 @@ class BordereauController extends AdminController
             $fileContent
         );
 
-        ColissimoLabel::setConfigValue(ColissimoLabel::CONFIG_KEY_LAST_BORDEREAU_DATE, (new \DateTime())->format("Y-m-d H:i:s"));
+        ColissimoLabel::setConfigValue(ColissimoLabel::CONFIG_KEY_LAST_BORDEREAU_DATE, (new \DateTime())->format('Y-m-d H:i:s'));
 
         return $this->listBordereauAction();
     }
 
+    /**
+     * Return the error message contained in the SOAP response from Colissimo
+     *
+     * @param $data
+     * @return array
+     */
+    protected function getError($data) {
+        $errorMessage = explode("<messageContent>", $data);
+        $errorMessage = explode("</messageContent>", $errorMessage[1]);
+
+        return $errorMessage[0];
+    }
+
+    /**
+     * Retrieve a bordereau on the server given its filename passed in the request, and return it as a binary response
+     *
+     * @return BinaryFileResponse
+     */
     public function downloadBordereauAction()
     {
         $filePath = $this->getRequest()->get('filePath');
+
         return new BinaryFileResponse($filePath);
     }
 }

@@ -22,7 +22,7 @@
                     <ul id="tabbed-menu" class="nav nav-tabs">
                         <li class="{if $tab eq "bordereaux"}active{/if}"><a href="{if $tab eq 'bordereaux'}#{else}{url path='/admin/module/colissimolabel/bordereaux'}{/if}">{intl l="Bordereaux" d='colissimolabel.bo.default'}</a> </li>
                         <li class="{if $tab eq "labels"}active{/if}"><a href="{if $tab eq 'labels'}#{else}{url path='/admin/module/colissimolabel/labels'}{/if}">{intl l="Labels" d='colissimolabel.bo.default'}</a> </li>
-                        <li class="{if $tab eq "config"}active{/if}"><a href="{if $tab eq 'config'}#{else}{url path='/admin/module/colissimolabel/config'}{/if}">{intl l="Configuration" d='colissimolabel.bo.default'}</a> </li>
+                        <li class="{if $tab eq "config"}active{/if}"><a href="{if $tab eq 'config'}#{else}{url path='/admin/module/colissimolabel/configuration'}{/if}">{intl l="Configuration" d='colissimolabel.bo.default'}</a> </li>
                     </ul>
 
                     <div class="row">
@@ -43,7 +43,7 @@
                             </div>
                         </div>
 
-                        {if $bordereau}
+                        {if $bordereaux}
                         <div class="col-md-12 general-block-decorator">
                             <div class="row">
                                 <ul>
