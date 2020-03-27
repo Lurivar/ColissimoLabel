@@ -13,6 +13,7 @@
 namespace ColissimoLabel;
 
 use ColissimoLabel\Request\Helper\OutputFormat;
+use ColissimoLabel\Request\Helper\Service;
 use ColissimoWs\ColissimoWs;
 use Propel\Runtime\Connection\ConnectionInterface;
 use SoColissimo\SoColissimo;
@@ -29,9 +30,6 @@ use Thelia\Install\Database;
  */
 class ColissimoLabel extends BaseModule
 {
-    /** Events */
-    const GENERATE_LABEL_EVENT = 'colissimoLabel.generate_label_event';
-
     /** Constants */
     const DOMAIN_NAME = 'colissimolabel';
 
@@ -357,19 +355,26 @@ class ColissimoLabel extends BaseModule
      */
     public static function canOrderBeNotSigned(Order $order)
     {
-        $areas = $order->getOrderAddressRelatedByDeliveryOrderAddressId()->getCountry()->getAreas();
+        $countryIsoCode = $order->getOrderAddressRelatedByDeliveryOrderAddressId()->getCountry()->getIsocode();
 
-        $areas_id = [];
-
-        foreach ($areas as $area){
-            $areas_id[] = $area->getId();
-        }
-
-        if (in_array(4, $areas_id) || in_array(5, $areas_id)) // If order's country isn't in Europe or in DOM-TOM so order has to be signed
+        /** Checking if the delivery country is in Europe or a DOMTOM. If not, it HAS to be signed */
+        if (!in_array($countryIsoCode, Service::DOMTOM_ISOCODES, false)
+        && !in_array($countryIsoCode, Service::EUROPE_ISOCODES, false))
         {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Remove the accentuated and special characters from a string an replace them with
+     * latin ASCII characters. Does the same to cyrillic.
+     *
+     * @param $str
+     * @return false|string
+     */
+    public static function removeAccents($str) {
+        return iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", transliterator_transliterate('Any-Latin; Latin-ASCII; Upper()', $str));
     }
 }

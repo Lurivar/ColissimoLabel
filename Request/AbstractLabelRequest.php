@@ -2,6 +2,7 @@
 
 namespace ColissimoLabel\Request;
 
+use ColissimoLabel\ColissimoLabel;
 use ColissimoLabel\Request\Helper\Letter;
 use ColissimoLabel\Request\Helper\OutputFormat;
 
@@ -109,15 +110,15 @@ abstract class AbstractLabelRequest extends AbstractRequest
                 'addressee' => [
                     'addresseeParcelRef' => $this->getLetter()->getAddressee()->getAddresseeParcelRef(),
                     'address' => [
-                        'companyName' => $this->getLetter()->getAddressee()->getAddress()->getCompanyName(),
-                        'lastName' => $this->getLetter()->getAddressee()->getAddress()->getLastName(),
-                        'firstName' => $this->getLetter()->getAddressee()->getAddress()->getFirstName(),
-                        'line0' => $this->getLetter()->getAddressee()->getAddress()->getLine0(),
-                        'line1' => $this->getLetter()->getAddressee()->getAddress()->getLine1(),
-                        'line2' => $this->getLetter()->getAddressee()->getAddress()->getLine2(),
-                        'line3' => $this->getLetter()->getAddressee()->getAddress()->getLine3(),
+                        'companyName' => ColissimoLabel::removeAccents($this->getLetter()->getAddressee()->getAddress()->getCompanyName()),
+                        'lastName' => ColissimoLabel::removeAccents($this->getLetter()->getAddressee()->getAddress()->getLastName()),
+                        'firstName' => ColissimoLabel::removeAccents($this->getLetter()->getAddressee()->getAddress()->getFirstName()),
+                        'line0' => ColissimoLabel::removeAccents($this->getLetter()->getAddressee()->getAddress()->getLine0()),
+                        'line1' => ColissimoLabel::removeAccents($this->getLetter()->getAddressee()->getAddress()->getLine1()),
+                        'line2' => ColissimoLabel::removeAccents($this->getLetter()->getAddressee()->getAddress()->getLine2()),
+                        'line3' => ColissimoLabel::removeAccents($this->getLetter()->getAddressee()->getAddress()->getLine3()),
                         'countryCode' => $this->getLetter()->getAddressee()->getAddress()->getCountryCode(),
-                        'city' => $this->getLetter()->getAddressee()->getAddress()->getCity(),
+                        'city' => ColissimoLabel::removeAccents($this->getLetter()->getAddressee()->getAddress()->getCity()),
                         'zipCode' => $this->getLetter()->getAddressee()->getAddress()->getZipCode(),
                         'phoneNumber' => $this->getLetter()->getAddressee()->getAddress()->getPhoneNumber(),
                         'mobileNumber' => $this->getLetter()->getAddressee()->getAddress()->getMobileNumber(),

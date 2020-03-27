@@ -5,7 +5,6 @@
         xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
 
     <loops>
-        <loop name="colissimo-label" class="ColissimoLabel\Loop\ColissimoLabel" />
         <loop name="colissimolabel.orders-not-sent" class="ColissimoLabel\Loop\OrdersNotSentLoop" />
         <loop name="colissimolabel.label-info" class="ColissimoLabel\Loop\ColissimoLabelInfo" />
     </loops>

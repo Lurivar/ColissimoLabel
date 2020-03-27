@@ -52,7 +52,12 @@
     <route id="colissimolabel.admin.bordereau.generate" path="/admin/module/colissimolabel/bordereau/generate" methods="get">
         <default key="_controller">ColissimoLabel\Controller\Admin\BordereauController::generateBordereauAction</default>
     </route>
+
     <route id="colissimolabel.admin.bordereau.download" path="/admin/module/colissimolabel/bordereau/download" methods="get">
         <default key="_controller">ColissimoLabel\Controller\Admin\BordereauController::downloadBordereauAction</default>
+    </route>
+
+    <route id="colissimolabel.admin.bordereau.delete" path="/admin/module/colissimolabel/bordereau/delete">
+        <default key="_controller">ColissimoLabel\Controller\Admin\BordereauController::deleteBordereauAction</default>
     </route>
 </routes>

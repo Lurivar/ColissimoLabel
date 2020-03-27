@@ -31,8 +31,6 @@ class LabelRequest extends AbstractLabelRequest
     {
         $orderAddress = OrderAddressQuery::create()->findOneById($order->getDeliveryOrderAddressId());
 
-        //$isPickup = null !== $pickupType ? $pickupType : $this->getProductCode($order);
-
         /**
          * If a pickup type was given (relay point delivery), we set the delivery code $productCode as this.
          * Otherwise, we check in getProductCode which delivery type is necessary given the delivery country and whether this

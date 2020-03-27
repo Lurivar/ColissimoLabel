@@ -44,18 +44,37 @@
                         </div>
 
                         {if $bordereaux}
-                        <div class="col-md-12 general-block-decorator">
-                            <div class="row">
-                                <ul>
-                                    {foreach from=$bordereaux item=bordereau}
-                                    <li>
-                                        <a href="{url path="/admin/module/colissimolabel/bordereau/download" filePath="{$bordereau['path']}"}">
-                                        {$bordereau['name']}
-                                        </a>
-                                    </li>
-                                    {/foreach}
-                                </ul>
-                            </div>
+                        <table class="table table-condensed" style="width:100%">
+                            <colgroup>
+                                <col style="width: 95%;">
+                                <col style="width: 5%;">
+                            </colgroup>
+                            <thead>
+                                <tr class="active">
+                                    <th class="text-left">{intl d='colissimolabel.bo.default' l="Bordereau"}</th>
+                                    <th class="text-center">{intl d='colissimolabel.bo.default' l="Action"}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {foreach from=$bordereaux item=bordereau}
+                            <tr>
+                                <td class="text-left">
+                                    <a href="{url path="/admin/module/colissimolabel/bordereau/download" filePath="{$bordereau['path']}"}" target="_blank">
+                                    {$bordereau['name']}
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <a class="btn btn-default btn-xs" href="{url path="/admin/module/colissimolabel/bordereau/download" stay="1" filePath="{$bordereau['path']}"}" title="{intl d='colissimolabel.bo.default' l="Download bordereau"}">
+                                    <i class="glyphicon glyphicon-download"></i>
+                                    </a>
+                                    <a class="btn btn-default btn-xs" href="{url path="/admin/module/colissimolabel/bordereau/delete" filePath="{$bordereau['path']}"}"" title="{intl d='colissimolabel.bo.default' l="Delete bordereau"}">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {/foreach}
+                            </tbody>
+                        </table>
                         </div>
                         {/if}
                     </div>
